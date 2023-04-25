@@ -1,45 +1,73 @@
+# 🎞️ EXIF Metadata Remover 📸
 
-# EXIF Metadata Remover
+![Python](https://img.shields.io/badge/Python-3.8-blue) ![License](https://img.shields.io/badge/license-GNU-green)
 
-This Python script is designed to remove EXIF metadata from images and other metadata from videos. The script can be used as an AWS Lambda function to process files automatically as they are uploaded to an S3 bucket.
+**EXIF Metadata Remover** is a super cool 😎 Python script to remove EXIF metadata from your images 🖼️ and videos 📹 stored in an AWS S3 bucket. It's lightweight, efficient, and easy to use! Get rid of those pesky EXIF data and protect your privacy! 🛡️
 
-## Requirements
+## 🚀 Features
 
--   Python 3.6 or later
--   [Pillow](https://pillow.readthedocs.io/en/stable/) library
--   [PyAV](https://pyav.org/) library
--   [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) library
+-   Supports multiple image formats: `.jpg`, `.jpeg`, `.png`, `.tiff`, `.tif`, `.heic`, `.heif`
+-   Supports multiple video formats: `.mp4`, `.mov`, `.avi`, `.mkv`, `.webm`
+-   AWS Lambda ready! ⚡
 
-## How to use
+## 📦 Requirements
 
-To use this script, you can simply copy and paste it into your Python environment or editor. The script includes a `lambda_handler` function, which can be used as an AWS Lambda function to process files automatically as they are uploaded to an S3 bucket.
+-   Python 3.8 or higher
+-   `boto3` (AWS SDK for Python)
+-   `Pillow` (Python Imaging Library)
+-   `moviepy` (Video editing library)
 
-Before deploying the script as an AWS Lambda function, you will need to ensure that the following environment variables are set:
+## 🛠️ Installation
 
--   `NEW_BUCKET`: the name of the S3 bucket where the processed files will be uploaded.
+1.  Clone the repo:
+`git clone https://github.com/flightlesstux/EXIF-Metadata-Remover.git` 
+-   Install the required packages:
+2.  `pip3 install -r requirements.txt` 
+3.  Replace `your-bucket-name` with the actual name of your S3 bucket, and `your-function-name` with the name of your Lambda function. This policy allows the Lambda function to read and write objects in the specified S3 bucket, invoke the Lambda function, and write logs to CloudWatch Logs.
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::your-bucket-name/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:lambda:*:*:function:your-function-name"
+    }
+  ]
+}
 
-To run the script locally, you can modify the `lambda_handler` function to accept a local file path instead of an S3 object key.
-
-## How it works
-
-The `remove_exif_from_image` function removes EXIF metadata from an image file. The function uses the [Pillow](https://pillow.readthedocs.io/en/stable/) library to open the image, convert it to RGB format, and save it as a new image without EXIF data.
-
-The `remove_metadata_from_video` function removes metadata from a video file. The function uses the [PyAV](https://pyav.org/) library to open the video, iterate over each packet in each stream, decode the packets into frames, and encode the frames into new packets without metadata.
-
-The `lambda_handler` function is the entry point for the AWS Lambda function. The function downloads the file from S3, determines whether it is an image or video file, and calls the appropriate function to remove metadata. The function then uploads the processed file to S3.
-
-## Creating a custom Lambda layer
-
-If you want to create a custom Lambda layer for this script, you can follow these steps:
-
-1.  Create a new folder for your layer.
-2.  Install the required libraries (`Pillow`, `PyAV`, and `boto3`) using pip and the `--target` flag to install the libraries in the folder you created:
-
-1.  `pip install Pillow PyAV boto3 --target /path/to/your/layer/folder` 
+```
+4.  Set the `S3_BUCKET_NAME` environment variable to the name of your AWS S3 bucket.
     
-2.  Copy the `remove_exif_from_image` and `remove_metadata_from_video` functions into a new Python file in the folder.
-3.  Create an empty `__init__.py` file in the folder.
-4.  Zip the contents of the folder (including the `__init__.py` file) into a file called `layer.zip`.
-5.  Upload the `layer.zip` file to a new Lambda layer in your AWS account.
 
-You can then reference the Lambda layer in your AWS Lambda function to use the `remove_exif_from_image` and `remove_metadata_from_video` functions without needing to include the libraries in your deployment package.
+## 🎯 Usage
+
+1.  Upload an image or video to your S3 bucket.
+2.  The script automatically processes the file and removes the EXIF metadata.
+3.  The cleaned file is saved back to the S3 bucket with a tag `ExifDeleted=True`.
+    
+
+## 📖 License
+
+This project is licensed under the GNU GENERAL PUBLIC LICENSE License. See the [LICENSE](https://github.com/flightlesstux/EXIF-Metadata-Remover/blob/main/LICENSE) file for more information.
