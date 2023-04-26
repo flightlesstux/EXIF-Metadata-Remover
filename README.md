@@ -71,3 +71,6 @@
 ## 📖 License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE License. See the [LICENSE](https://github.com/flightlesstux/EXIF-Metadata-Remover/blob/main/LICENSE) file for more information.
+
+## Published On
+[Secure Your Media Files by Removing Metadata with AWS Lambda](https://ercanermis.com/secure-your-media-files-by-removing-metadata-with-aws-lambda/)
